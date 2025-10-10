@@ -10,7 +10,9 @@ import { Label } from '@/components/ui/label.jsx'
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
 import './App.css'
 
-const API_BASE = 'http://localhost:5000/api/fairness'
+const API_BASE = import.meta.env.VITE_API_URL 
+  ? `${import.meta.env.VITE_API_URL}/api/fairness`
+  : 'https://fairness-toolkit-backend.onrender.com/api/fairness'
 
 function App() {
   const [currentStep, setCurrentStep] = useState(0)
