@@ -9,7 +9,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs.j
 /**
  * MitigationPanel - Interface for applying bias mitigation techniques
  */
-export function MitigationPanel({ apiBase, sensitiveAttr, results }) {
+export function MitigationPanel({ apiBase, sensitiveAttr, results = {} }) {
+  // Safety check
+  if (!apiBase) {
+    return <div className="p-4 text-red-600">Error: API base URL not configured</div>
+  }
   const [loading, setLoading] = useState(false)
   const [recommendations, setRecommendations] = useState(null)
   const [mitigationResults, setMitigationResults] = useState(null)
