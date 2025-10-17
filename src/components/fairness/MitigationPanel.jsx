@@ -43,7 +43,7 @@ export function MitigationPanel({ apiBase, sensitiveAttr, results }) {
     }
   }
 
-  const applyMitigation = async (technique) => {
+  const applyMitigation = async (recommendation) => {
     setLoading(true)
     setError(null)
     
@@ -52,7 +52,8 @@ export function MitigationPanel({ apiBase, sensitiveAttr, results }) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          technique,
+          technique: recommendation.technique,
+          technique_type: recommendation.type,
           sensitive_attr: sensitiveAttr
         })
       })
@@ -148,7 +149,7 @@ export function MitigationPanel({ apiBase, sensitiveAttr, results }) {
                           </div>
                         )}
                         <Button 
-                          onClick={() => applyMitigation(rec.technique)}
+                          onClick={() => applyMitigation(rec)}
                           disabled={loading}
                           className="w-full"
                         >
