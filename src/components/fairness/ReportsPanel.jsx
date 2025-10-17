@@ -72,6 +72,38 @@ export function ReportsPanel({ apiBase, results, sensitiveAttr }) {
     }
   }
 
+  const downloadMitigatedData = async () => {
+    setLoading(true)
+    setError(null)
+    
+    try {
+      const response = await fetch(`${apiBase}/export/mitigated`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({})
+      })
+      
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || 'Failed to export mitigated data')
+      }
+      
+      const blob = await response.blob()
+      const url = window.URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = 'mitigated_data.csv'
+      document.body.appendChild(a)
+      a.click()
+      window.URL.revokeObjectURL(url)
+      document.body.removeChild(a)
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setLoading(false)
+    }
+  }
+
   return (
     <div className="space-y-6">
       <Card>
@@ -163,6 +195,15 @@ export function ReportsPanel({ apiBase, results, sensitiveAttr }) {
               >
                 <Download className="h-4 w-4 mr-2" />
                 Download JSON
+              </Button>
+              <Button 
+                variant="outline" 
+                onClick={() => downloadMitigatedData()}
+                disabled={loading}
+                className="bg-green-50 hover:bg-green-100"
+              >
+                <Download className="h-4 w-4 mr-2" />
+                Download Mitigated Data
               </Button>
             </div>
           </div>
