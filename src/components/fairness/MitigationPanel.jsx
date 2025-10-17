@@ -213,41 +213,74 @@ export function MitigationPanel({ apiBase, sensitiveAttr, results }) {
                           {mitigationResults.improvement.plain_language}
                         </p>
                       )}
-                      <div className="bg-white p-3 rounded">
+                      <div className="bg-white p-3 rounded max-h-96 overflow-y-auto">
                         <table className="w-full text-xs">
-                          <thead>
+                          <thead className="sticky top-0 bg-white">
                             <tr className="border-b">
                               <th className="text-left py-2 font-semibold">Metric</th>
+                              <th className="text-center py-2 font-semibold">Category</th>
                               <th className="text-right py-2 font-semibold">Before</th>
                               <th className="text-right py-2 font-semibold">After</th>
-                              <th className="text-right py-2 font-semibold text-green-700">Improvement</th>
+                              <th className="text-right py-2 font-semibold text-green-700">Change</th>
                             </tr>
                           </thead>
                           <tbody>
-                            <tr className="border-b">
-                              <td className="py-2">Selection Rate Disparity</td>
-                              <td className="text-right">{(mitigationResults.improvement.before.selection_rate_disparity * 100).toFixed(1)}%</td>
-                              <td className="text-right">{(mitigationResults.improvement.after.selection_rate_disparity * 100).toFixed(1)}%</td>
-                              <td className="text-right text-green-700 font-semibold">
-                                {mitigationResults.improvement.improvement.selection_rate >= 0 ? '↓' : '↑'} {Math.abs(mitigationResults.improvement.improvement.selection_rate * 100).toFixed(1)}%
-                              </td>
-                            </tr>
-                            <tr className="border-b">
-                              <td className="py-2">TPR Disparity (Equal Opportunity)</td>
-                              <td className="text-right">{(mitigationResults.improvement.before.tpr_disparity * 100).toFixed(1)}%</td>
-                              <td className="text-right">{(mitigationResults.improvement.after.tpr_disparity * 100).toFixed(1)}%</td>
-                              <td className="text-right text-green-700 font-semibold">
-                                {mitigationResults.improvement.improvement.tpr >= 0 ? '↓' : '↑'} {Math.abs(mitigationResults.improvement.improvement.tpr * 100).toFixed(1)}%
-                              </td>
-                            </tr>
-                            <tr>
-                              <td className="py-2">FPR Disparity (Equalized Odds)</td>
-                              <td className="text-right">{(mitigationResults.improvement.before.fpr_disparity * 100).toFixed(1)}%</td>
-                              <td className="text-right">{(mitigationResults.improvement.after.fpr_disparity * 100).toFixed(1)}%</td>
-                              <td className="text-right text-green-700 font-semibold">
-                                {mitigationResults.improvement.improvement.fpr >= 0 ? '↓' : '↑'} {Math.abs(mitigationResults.improvement.improvement.fpr * 100).toFixed(1)}%
-                              </td>
-                            </tr>
+                            {mitigationResults.improvement.comprehensive_improvement ? (
+                              mitigationResults.improvement.comprehensive_improvement.map((item, idx) => (
+                                <tr key={idx} className={idx % 2 === 0 ? 'bg-gray-50' : ''}>
+                                  <td className="py-2 pr-2">{item.metric}</td>
+                                  <td className="text-center py-2">
+                                    <Badge variant="outline" className="text-xs">
+                                      {item.category}
+                                    </Badge>
+                                  </td>
+                                  <td className="text-right py-2">{item.before.toFixed(4)}</td>
+                                  <td className="text-right py-2">{item.after.toFixed(4)}</td>
+                                  <td className={`text-right py-2 font-semibold ${
+                                    item.improved ? 'text-green-700' : 'text-red-700'
+                                  }`}>
+                                    {item.improved ? '✓' : '✗'} {item.improvement >= 0 ? '+' : ''}{item.improvement.toFixed(4)}
+                                  </td>
+                                </tr>
+                              ))
+                            ) : (
+                              // Fallback to old format if comprehensive_improvement not available
+                              <>
+                                <tr className="border-b">
+                                  <td className="py-2">Selection Rate Disparity</td>
+                                  <td className="text-center py-2">
+                                    <Badge variant="outline" className="text-xs">Classification</Badge>
+                                  </td>
+                                  <td className="text-right">{(mitigationResults.improvement.before.selection_rate_disparity * 100).toFixed(1)}%</td>
+                                  <td className="text-right">{(mitigationResults.improvement.after.selection_rate_disparity * 100).toFixed(1)}%</td>
+                                  <td className="text-right text-green-700 font-semibold">
+                                    {mitigationResults.improvement.improvement.selection_rate >= 0 ? '↓' : '↑'} {Math.abs(mitigationResults.improvement.improvement.selection_rate * 100).toFixed(1)}%
+                                  </td>
+                                </tr>
+                                <tr className="border-b">
+                                  <td className="py-2">TPR Disparity (Equal Opportunity)</td>
+                                  <td className="text-center py-2">
+                                    <Badge variant="outline" className="text-xs">Classification</Badge>
+                                  </td>
+                                  <td className="text-right">{(mitigationResults.improvement.before.tpr_disparity * 100).toFixed(1)}%</td>
+                                  <td className="text-right">{(mitigationResults.improvement.after.tpr_disparity * 100).toFixed(1)}%</td>
+                                  <td className="text-right text-green-700 font-semibold">
+                                    {mitigationResults.improvement.improvement.tpr >= 0 ? '↓' : '↑'} {Math.abs(mitigationResults.improvement.improvement.tpr * 100).toFixed(1)}%
+                                  </td>
+                                </tr>
+                                <tr>
+                                  <td className="py-2">FPR Disparity (Equalized Odds)</td>
+                                  <td className="text-center py-2">
+                                    <Badge variant="outline" className="text-xs">Classification</Badge>
+                                  </td>
+                                  <td className="text-right">{(mitigationResults.improvement.before.fpr_disparity * 100).toFixed(1)}%</td>
+                                  <td className="text-right">{(mitigationResults.improvement.after.fpr_disparity * 100).toFixed(1)}%</td>
+                                  <td className="text-right text-green-700 font-semibold">
+                                    {mitigationResults.improvement.improvement.fpr >= 0 ? '↓' : '↑'} {Math.abs(mitigationResults.improvement.improvement.fpr * 100).toFixed(1)}%
+                                  </td>
+                                </tr>
+                              </>
+                            )}
                           </tbody>
                         </table>
                         <p className="text-xs text-gray-500 mt-2">↓ indicates improvement (disparity reduced), ↑ indicates increase</p>
