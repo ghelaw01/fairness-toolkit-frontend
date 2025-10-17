@@ -207,10 +207,51 @@ export function MitigationPanel({ apiBase, sensitiveAttr, results }) {
                   )}
                   {mitigationResults.improvement && (
                     <div className="mt-4">
-                      <p className="text-sm font-medium text-green-800">Improvement:</p>
-                      <pre className="text-xs bg-white p-2 rounded mt-1 text-green-900 overflow-auto">
-                        {JSON.stringify(mitigationResults.improvement, null, 2)}
-                      </pre>
+                      <p className="text-sm font-medium text-green-800 mb-2">Fairness Improvement:</p>
+                      {mitigationResults.improvement.plain_language && (
+                        <p className="text-sm text-green-700 mb-3 italic">
+                          {mitigationResults.improvement.plain_language}
+                        </p>
+                      )}
+                      <div className="bg-white p-3 rounded">
+                        <table className="w-full text-xs">
+                          <thead>
+                            <tr className="border-b">
+                              <th className="text-left py-2 font-semibold">Metric</th>
+                              <th className="text-right py-2 font-semibold">Before</th>
+                              <th className="text-right py-2 font-semibold">After</th>
+                              <th className="text-right py-2 font-semibold text-green-700">Improvement</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr className="border-b">
+                              <td className="py-2">Selection Rate Disparity</td>
+                              <td className="text-right">{(mitigationResults.improvement.before.selection_rate_disparity * 100).toFixed(1)}%</td>
+                              <td className="text-right">{(mitigationResults.improvement.after.selection_rate_disparity * 100).toFixed(1)}%</td>
+                              <td className="text-right text-green-700 font-semibold">
+                                {mitigationResults.improvement.improvement.selection_rate >= 0 ? '↓' : '↑'} {Math.abs(mitigationResults.improvement.improvement.selection_rate * 100).toFixed(1)}%
+                              </td>
+                            </tr>
+                            <tr className="border-b">
+                              <td className="py-2">TPR Disparity (Equal Opportunity)</td>
+                              <td className="text-right">{(mitigationResults.improvement.before.tpr_disparity * 100).toFixed(1)}%</td>
+                              <td className="text-right">{(mitigationResults.improvement.after.tpr_disparity * 100).toFixed(1)}%</td>
+                              <td className="text-right text-green-700 font-semibold">
+                                {mitigationResults.improvement.improvement.tpr >= 0 ? '↓' : '↑'} {Math.abs(mitigationResults.improvement.improvement.tpr * 100).toFixed(1)}%
+                              </td>
+                            </tr>
+                            <tr>
+                              <td className="py-2">FPR Disparity (Equalized Odds)</td>
+                              <td className="text-right">{(mitigationResults.improvement.before.fpr_disparity * 100).toFixed(1)}%</td>
+                              <td className="text-right">{(mitigationResults.improvement.after.fpr_disparity * 100).toFixed(1)}%</td>
+                              <td className="text-right text-green-700 font-semibold">
+                                {mitigationResults.improvement.improvement.fpr >= 0 ? '↓' : '↑'} {Math.abs(mitigationResults.improvement.improvement.fpr * 100).toFixed(1)}%
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                        <p className="text-xs text-gray-500 mt-2">↓ indicates improvement (disparity reduced), ↑ indicates increase</p>
+                      </div>
                     </div>
                   )}
                 </div>
