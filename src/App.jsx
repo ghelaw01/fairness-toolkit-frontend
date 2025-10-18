@@ -468,18 +468,83 @@ function App() {
                       <CardTitle className="text-lg capitalize">{attr} Bias Analysis</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-3">
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm">Representation:</span>
-                        {renderBiasCard(attr, bias.representation)}
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm">Outcome:</span>
-                        {renderBiasCard(attr, bias.outcome)}
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm">Prediction:</span>
-                        {renderBiasCard(attr, bias.prediction)}
-                      </div>
+                      {bias.comprehensive ? (
+                        // New comprehensive bias assessment
+                        <>
+                          <div className="flex justify-between items-center">
+                            <div className="flex-1">
+                              <span className="text-sm font-medium">Representation:</span>
+                              <p className="text-xs text-muted-foreground mt-1">{bias.comprehensive.representation.description}</p>
+                            </div>
+                            <div className="flex flex-col items-end gap-1">
+                              {renderBiasCard(attr, bias.comprehensive.representation.level)}
+                              <span className="text-xs text-muted-foreground">{bias.comprehensive.representation.value.toFixed(4)}</span>
+                            </div>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <div className="flex-1">
+                              <span className="text-sm font-medium">Outcome:</span>
+                              <p className="text-xs text-muted-foreground mt-1">{bias.comprehensive.outcome.description}</p>
+                            </div>
+                            <div className="flex flex-col items-end gap-1">
+                              {renderBiasCard(attr, bias.comprehensive.outcome.level)}
+                              <span className="text-xs text-muted-foreground">{bias.comprehensive.outcome.value.toFixed(4)}</span>
+                            </div>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <div className="flex-1">
+                              <span className="text-sm font-medium">Prediction:</span>
+                              <p className="text-xs text-muted-foreground mt-1">{bias.comprehensive.prediction.description}</p>
+                            </div>
+                            <div className="flex flex-col items-end gap-1">
+                              {renderBiasCard(attr, bias.comprehensive.prediction.level)}
+                              <span className="text-xs text-muted-foreground">{bias.comprehensive.prediction.value.toFixed(4)}</span>
+                            </div>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <div className="flex-1">
+                              <span className="text-sm font-medium">Calibration:</span>
+                              <p className="text-xs text-muted-foreground mt-1">{bias.comprehensive.calibration.description}</p>
+                            </div>
+                            <div className="flex flex-col items-end gap-1">
+                              {renderBiasCard(attr, bias.comprehensive.calibration.level)}
+                              <span className="text-xs text-muted-foreground">{bias.comprehensive.calibration.value.toFixed(4)}</span>
+                            </div>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <div className="flex-1">
+                              <span className="text-sm font-medium">Individual Fairness:</span>
+                              <p className="text-xs text-muted-foreground mt-1">{bias.comprehensive.individual.description}</p>
+                            </div>
+                            <div className="flex flex-col items-end gap-1">
+                              {renderBiasCard(attr, bias.comprehensive.individual.level)}
+                              <span className="text-xs text-muted-foreground">{bias.comprehensive.individual.value.toFixed(4)}</span>
+                            </div>
+                          </div>
+                          <div className="mt-4 pt-4 border-t">
+                            <div className="flex justify-between items-center">
+                              <span className="text-sm font-semibold">Overall Assessment:</span>
+                              {renderBiasCard(attr, bias.comprehensive.overall.level)}
+                            </div>
+                          </div>
+                        </>
+                      ) : (
+                        // Legacy fallback
+                        <>
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm">Representation:</span>
+                            {renderBiasCard(attr, bias.representation)}
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm">Outcome:</span>
+                            {renderBiasCard(attr, bias.outcome)}
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm">Prediction:</span>
+                            {renderBiasCard(attr, bias.prediction)}
+                          </div>
+                        </>
+                      )}
                     </CardContent>
                   </Card>
                 ))}
