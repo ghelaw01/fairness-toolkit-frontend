@@ -12,6 +12,7 @@ import { HelpTooltip, FAIRNESS_TOOLTIPS } from '@/components/fairness/HelpToolti
 import { RiskIndicator, RiskBadge } from '@/components/fairness/RiskIndicator.jsx'
 import { MitigationPanel } from '@/components/fairness/MitigationPanel.jsx'
 import { ReportsPanel } from '@/components/fairness/ReportsPanel.jsx'
+import { ExplainSHAPSummary, ExplainIndividual, ExplainGroupComparison, ExplainFairnessAware } from '@/components/explainability/ExplainabilityComponents.jsx'
 import './App.css'
 
 const API_BASE = import.meta.env.VITE_API_URL 
@@ -659,6 +660,7 @@ function App() {
         </TabsContent>
 
         <TabsContent value="explain" className="space-y-4">
+          {/* Feature Importance */}
           <Card>
             <CardHeader>
               <CardTitle>Feature Importance</CardTitle>
@@ -679,6 +681,50 @@ function App() {
               ) : (
                 <p className="text-center text-muted-foreground py-8">No feature importance available.</p>
               )}
+            </CardContent>
+          </Card>
+
+          {/* SHAP Summary */}
+          <Card>
+            <CardHeader>
+              <CardTitle>SHAP Values - Global Explanation</CardTitle>
+              <CardDescription>SHAP (SHapley Additive exPlanations) shows how each feature contributes to predictions across all instances</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ExplainSHAPSummary apiBase={API_BASE} />
+            </CardContent>
+          </Card>
+
+          {/* Individual Predictions */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Individual Prediction Explanation</CardTitle>
+              <CardDescription>Understand why the model made a specific prediction for a particular instance</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ExplainIndividual apiBase={API_BASE} />
+            </CardContent>
+          </Card>
+
+          {/* Group Comparison */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Group-Specific SHAP Analysis</CardTitle>
+              <CardDescription>Compare how features affect predictions differently across demographic groups</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ExplainGroupComparison apiBase={API_BASE} sensitiveAttributes={config.sensitiveAttributes} />
+            </CardContent>
+          </Card>
+
+          {/* Fairness-Aware Features */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Fairness-Aware Feature Analysis</CardTitle>
+              <CardDescription>Identify features that contribute most to prediction disparities across groups</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ExplainFairnessAware apiBase={API_BASE} sensitiveAttributes={config.sensitiveAttributes} />
             </CardContent>
           </Card>
         </TabsContent>
